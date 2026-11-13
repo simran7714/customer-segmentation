@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, Upload, BarChart2, Layers, 
   Award, Table, FileText, CheckCircle2, AlertCircle, RefreshCw,
-  PieChart as PieIcon, Sparkles
+  PieChart as PieIcon, Sparkles, History
 } from 'lucide-react';
 
 import Navbar from './components/Navbar';
@@ -15,8 +15,9 @@ import VisualizationsTab from './components/VisualizationsTab';
 import InsightsTab from './components/InsightsTab';
 import RecordsTab from './components/RecordsTab';
 import ReportsTab from './components/ReportsTab';
+import HistoryTab from './components/HistoryTab';
 
-import { checkHealth, uploadDataset, runClustering } from './api';
+import { checkHealth, uploadDataset, runClustering, loadAnalysisFromHistory } from './api';
 
 const TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -26,7 +27,8 @@ const TABS = [
   { id: 'visualizations', label: 'Cluster Visualizations', icon: Sparkles },
   { id: 'insights', label: 'Business Insights', icon: Award },
   { id: 'records', label: 'Customer Records', icon: Table },
-  { id: 'reports', label: 'Reports & Exports', icon: FileText }
+  { id: 'reports', label: 'Reports & Exports', icon: FileText },
+  { id: 'history', label: 'History & SQLite', icon: History }
 ];
 
 export default function App() {
@@ -114,6 +116,37 @@ export default function App() {
   const handleClusteringComplete = (result) => {
     setClusterResult(result);
     setInsights(result.insights);
+  };
+
+  // Restore past analysis from SQLite Database into active dashboard state
+  const handleLoadHistoryAnalysis = async (analysisId) => {
+    setIsLoading(true);
+    setGlobalError('');
+    try {
+      const res = await loadAnalysisFromHistory(analysisId);
+      setClusterResult(res);
+      setInsights(res.insights);
+      setDatasetInfo({
+        filename: res.dataset_filename,
+        total_rows: res.total_clustered_count,
+        total_cols: res.features.length,
+        analysis: {
+          total_rows: res.total_clustered_count,
+          total_cols: res.features.length,
+          columns: res.features,
+          numerical_cols: res.features,
+          recommended_features: res.features,
+          num_stats: {},
+          preview_records: res.clustered_data_sample
+        }
+      });
+      setActiveTab('visualizations');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      setGlobalError(err.message || 'Failed to restore analysis from SQLite');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // If in landing view, render the dedicated Landing Page
@@ -253,6 +286,13 @@ export default function App() {
             datasetInfo={datasetInfo}
             clusterResult={clusterResult}
             insights={insights}
+            onNavigateTab={setActiveTab}
+          />
+        )}
+
+        {activeTab === 'history' && (
+          <HistoryTab
+            onLoadAnalysis={handleLoadHistoryAnalysis}
             onNavigateTab={setActiveTab}
           />
         )}

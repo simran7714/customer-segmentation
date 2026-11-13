@@ -6,6 +6,12 @@ export async function checkHealth() {
   return res.json();
 }
 
+export async function fetchDatabaseStats() {
+  const res = await fetch(`${API_BASE}/db/stats`);
+  if (!res.ok) throw new Error('Failed to retrieve database diagnostics');
+  return res.json();
+}
+
 export async function fetchSampleDatasets() {
   const res = await fetch(`${API_BASE}/samples`);
   if (!res.ok) throw new Error('Failed to load sample datasets');
@@ -45,11 +51,11 @@ export async function calculateElbow(features, scaler = 'standard', maxK = 10) {
   return res.json();
 }
 
-export async function runClustering(features, k, scaler = 'standard') {
+export async function runClustering(features, k, scaler = 'standard', notes = '') {
   const res = await fetch(`${API_BASE}/cluster`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ features, k, scaler })
+    body: JSON.stringify({ features, k, scaler, notes })
   });
   if (!res.ok) {
     const err = await res.json();
@@ -58,10 +64,56 @@ export async function runClustering(features, k, scaler = 'standard') {
   return res.json();
 }
 
+// ============================================================================
+// SQLITE DATABASE & ANALYSIS HISTORY
+// ============================================================================
+
+export async function fetchAnalysisHistory() {
+  const res = await fetch(`${API_BASE}/history`);
+  if (!res.ok) throw new Error('Failed to load analysis history from SQLite');
+  return res.json();
+}
+
+export async function loadAnalysisFromHistory(analysisId) {
+  const res = await fetch(`${API_BASE}/history/${analysisId}`);
+  if (!res.ok) throw new Error('Failed to load analysis record from SQLite');
+  return res.json();
+}
+
+export async function deleteAnalysisFromHistory(analysisId) {
+  const res = await fetch(`${API_BASE}/history/${analysisId}`, {
+    method: 'DELETE'
+  });
+  if (!res.ok) throw new Error('Failed to delete analysis record');
+  return res.json();
+}
+
+export async function updateAnalysisNotes(analysisId, analysisName, notes) {
+  const res = await fetch(`${API_BASE}/history/${analysisId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ analysis_name: analysisName, notes })
+  });
+  if (!res.ok) throw new Error('Failed to update analysis');
+  return res.json();
+}
+
+// ============================================================================
+// URL GENERATORS
+// ============================================================================
+
 export function getReportHtmlUrl() {
   return `${API_BASE}/report/html`;
 }
 
 export function getExportCsvUrl() {
   return `${API_BASE}/export/csv`;
+}
+
+export function getHistoricalExportCsvUrl(analysisId) {
+  return `${API_BASE}/history/${analysisId}/export`;
+}
+
+export function getHistoricalReportHtmlUrl(analysisId) {
+  return `${API_BASE}/history/${analysisId}/report`;
 }

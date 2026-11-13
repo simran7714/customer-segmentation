@@ -49,6 +49,15 @@ export default function Navbar({ datasetInfo, clusterResult, isConnected, onGoHo
               <span className="hidden md:inline">{isConnected ? 'ML Engine Online' : 'Connecting Engine...'}</span>
             </div>
 
+            {/* SQLite DB Status Badge */}
+            <div 
+              className="hidden xl:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200"
+              title="Persistent SQLite Local Database"
+            >
+              <Database className="w-3 h-3 text-emerald-600" />
+              <span>SQLite Persistent</span>
+            </div>
+
             {/* Current Loaded Dataset Info */}
             {datasetInfo ? (
               <div className="hidden lg:flex items-center space-x-2 px-3 py-1 rounded-lg bg-brand-50 border border-brand-200 text-brand-900 text-xs">

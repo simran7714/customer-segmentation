@@ -19,6 +19,14 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# SQLite Database runtime files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+backend/data/*.db*
+
 # Environment and local configs
 .env
 .env.local
