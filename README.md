@@ -193,3 +193,6 @@ Customer Segmentationn/
 - Streaming real-time segmentation via **Mini-Batch K-Means** and Kafka.
 - Native bi-directional CRM integration (Salesforce / HubSpot).
 - AI Next-Best-Action recommendation engine based on customer segment propensity scores.
+
+## live website 
+ live link - https://vercel.com/simran-s-projects80/customer-segmentation
