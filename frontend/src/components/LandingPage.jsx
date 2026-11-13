@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import LightTunnel from './LightTunnel';
 import { 
   Target, Layers, BarChart3, Database, Sparkles, Cpu, 
   PieChart as PieIcon, TrendingUp, Users, ArrowRight, 
@@ -23,7 +22,6 @@ export default function LandingPage({ onGetStarted }) {
   };
 
   const isDark = theme === 'dark';
-  const [heroVisualMode, setHeroVisualMode] = useState('tunnel'); // 'tunnel' or 'scatter'
 
   return (
     <div className={`min-h-screen font-sans selection:bg-brand-500 selection:text-white relative overflow-hidden transition-colors duration-300 ${
@@ -233,7 +231,7 @@ export default function LandingPage({ onGetStarted }) {
             }`}>
               
               {/* Window Header */}
-              <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 mb-6 ${
+              <div className={`flex items-center justify-between border-b pb-4 mb-6 ${
                 isDark ? 'border-white/10' : 'border-slate-200'
               }`}>
                 <div className="flex items-center space-x-2">
@@ -246,370 +244,193 @@ export default function LandingPage({ onGetStarted }) {
                     kmeans_clustering_engine.py &bull; 5 Identified Clusters &bull; WCSS Converged
                   </span>
                 </div>
-
-                {/* View Mode Switcher */}
-                <div className="flex items-center space-x-2">
-                  <div className={`flex items-center p-1 rounded-xl border ${
-                    isDark ? 'bg-black/40 border-white/10' : 'bg-slate-100 border-slate-300'
-                  }`}>
-                    <button
-                      onClick={() => setHeroVisualMode('tunnel')}
-                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 ${
-                        heroVisualMode === 'tunnel'
-                          ? 'bg-brand-600 text-white shadow'
-                          : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>3D Vector Tunnel (WebGL)</span>
-                    </button>
-                    <button
-                      onClick={() => setHeroVisualMode('scatter')}
-                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 ${
-                        heroVisualMode === 'scatter'
-                          ? 'bg-brand-600 text-white shadow'
-                          : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      <Target className="w-3.5 h-3.5" />
-                      <span>2D Centroid Space</span>
-                    </button>
-                  </div>
-
-                  <div className={`hidden md:flex items-center space-x-2 text-xs font-mono px-3 py-1.5 rounded-lg border ${
-                    isDark ? 'text-slate-400 border-white/10 bg-white/[0.02]' : 'text-slate-600 border-slate-200 bg-slate-50'
-                  }`}>
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Optimal K: 5 &bull; Silhouette: 0.553</span>
-                  </div>
+                <div className={`flex items-center space-x-2 text-xs font-mono ${
+                  isDark ? 'text-slate-400' : 'text-slate-600'
+                }`}>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Optimal K: 5 &bull; Silhouette: 0.553</span>
                 </div>
               </div>
 
-              {/* View Content */}
-              {heroVisualMode === 'tunnel' ? (
-                /* 3D WebGL Neural LightTunnel View */
-                <div className="space-y-6">
-                  <div className={`relative rounded-2xl overflow-hidden border shadow-inner ${
-                    isDark ? 'border-white/10 bg-black/60' : 'border-slate-300 bg-slate-900'
-                  }`}>
-                    <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-                      <LightTunnel
-                        cableColor={isDark ? "#ffffff" : "#4338ca"}
-                        pulseColor={isDark ? "#ffffff" : "#6366f1"}
-                        cableCount={56}
-                        pulseDensity={0.5}
-                        flowDirection="inward"
-                        mouseInteraction
-                        clickSurge
-                        tunnelColor={isDark ? "#ffffff" : "#0f172a"}
-                        tunnelOpacity={0}
-                        speed={0.1}
-                        pulseSpeed={2}
-                        pulseLength={0.28}
-                        pulseBlend={0.6}
-                        pulseWidth={1}
-                        thickness={0.35}
-                        rimWidth={0.15}
-                        waviness={0.3}
-                        sway={0.5}
-                        bend={0.4}
-                        glow={1}
-                        size={1}
-                        fadeNear={0.5}
-                        fadeFar={2}
-                        brightness={1}
-                        colorVariance
-                        grain={false}
-                        mouseStrength={0.1}
-                        intro
-                        lightMode={!isDark}
-                      />
-                    </div>
-
-                    {/* HUD Top Info Overlay */}
-                    <div className="absolute top-4 left-4 right-4 flex flex-wrap items-center justify-between pointer-events-none gap-2 z-10">
-                      <div className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md border shadow-lg ${
-                        isDark 
-                          ? 'bg-slate-950/75 text-white border-white/15' 
-                          : 'bg-white/90 text-slate-900 border-slate-300'
-                      }`}>
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-                        <span>Interactive High-Dimensional Customer Vector Tunnel</span>
-                      </div>
-
-                      <div className={`hidden sm:flex items-center space-x-3 px-3.5 py-1.5 rounded-full text-[11px] font-mono backdrop-blur-md border shadow-lg ${
-                        isDark 
-                          ? 'bg-slate-950/75 text-slate-300 border-white/15' 
-                          : 'bg-white/90 text-slate-700 border-slate-300'
-                      }`}>
-                        <span className="text-cyan-400 font-semibold">Hover to Steer</span>
-                        <span className="text-slate-500">&bull;</span>
-                        <span className="text-amber-400 font-semibold">Click for Data Surge</span>
-                      </div>
-                    </div>
-
-                    {/* HUD Bottom Info Overlay */}
-                    <div className={`absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between px-4 py-2.5 rounded-xl backdrop-blur-md border pointer-events-none text-xs z-10 ${
+              {/* Graphic Clustering Scatter Canvas Visual */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                
+                {/* 2D Illustrative Multi-Cluster Visual Canvas */}
+                <div className={`lg:col-span-2 relative rounded-xl border p-5 overflow-hidden ${
+                  isDark 
+                    ? 'bg-[#060A12] border-white/10' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between mb-3 text-xs">
+                    <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                      Customer Multi-Cluster Scatter Space (Annual Income vs Spending Score)
+                    </span>
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
                       isDark 
-                        ? 'bg-slate-950/80 border-white/15 text-slate-300' 
-                        : 'bg-white/95 border-slate-200 text-slate-800 shadow-md'
+                        ? 'text-brand-400 bg-brand-500/10 border-brand-500/20' 
+                        : 'text-brand-700 bg-brand-50 border-brand-200'
                     }`}>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-bold text-brand-400">Multi-Feature Vectors:</span>
-                        <span className="hidden md:inline">Annual Income (k$) &bull; Spending Score &bull; Purchase Frequency &bull; Customer Age</span>
-                        <span className="md:hidden">Income &bull; Score &bull; Frequency</span>
-                      </div>
-                      <div className="font-mono text-[11px] text-emerald-400 font-bold flex items-center space-x-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                        <span>K=5 Centroid Convergence Active</span>
-                      </div>
-                    </div>
+                      Live Centroid Preview
+                    </span>
                   </div>
 
-                  {/* Below-tunnel Quick Controls & Insights Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className={`p-4 rounded-xl border ${
-                      isDark ? 'bg-white/[0.03] border-white/10' : 'bg-slate-50 border-slate-200'
-                    }`}>
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                          Algorithm
-                        </span>
-                        <span className="text-[10px] font-mono text-brand-400 font-semibold">k-means++</span>
-                      </div>
-                      <h4 className={`font-extrabold text-sm mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        Lloyd's Iterative Solver
-                      </h4>
-                      <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                        Calculates Euclidean distance across multi-dimensional customer features to converge on optimal cluster centroids.
-                      </p>
-                    </div>
+                  {/* SVG Cluster Plot */}
+                  <svg viewBox="0 0 500 280" className="w-full h-64 overflow-visible">
+                    <defs>
+                      <radialGradient id="gradCluster0" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="#4f46e5" stopOpacity="0.8"/>
+                        <stop offset="100%" stopColor="#4f46e5" stopOpacity="0"/>
+                      </radialGradient>
+                      <radialGradient id="gradCluster1" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity="0.8"/>
+                        <stop offset="100%" stopColor="#10b981" stopOpacity="0"/>
+                      </radialGradient>
+                      <radialGradient id="gradCluster2" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.8"/>
+                        <stop offset="100%" stopColor="#f59e0b" stopOpacity="0"/>
+                      </radialGradient>
+                      <radialGradient id="gradCluster3" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.8"/>
+                        <stop offset="100%" stopColor="#06b6d4" stopOpacity="0"/>
+                      </radialGradient>
+                      <radialGradient id="gradCluster4" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="#ec4899" stopOpacity="0.8"/>
+                        <stop offset="100%" stopColor="#ec4899" stopOpacity="0"/>
+                      </radialGradient>
+                    </defs>
 
-                    <div className={`p-4 rounded-xl border ${
-                      isDark ? 'bg-white/[0.03] border-white/10' : 'bg-slate-50 border-slate-200'
-                    }`}>
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                          Optimal Centroids
-                        </span>
-                        <span className="text-[10px] font-mono text-emerald-400 font-semibold">Silhouette 0.553</span>
-                      </div>
-                      <h4 className={`font-extrabold text-sm mt-1 text-emerald-400`}>
-                        K = 5 Distinct Segments
-                      </h4>
-                      <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                        Verified mathematically with Elbow Method WCSS minimum inflection and Silhouette cluster cohesion metrics.
-                      </p>
-                    </div>
+                    {/* Grid Lines */}
+                    <line x1="40" y1="20" x2="40" y2="250" stroke={isDark ? '#1e293b' : '#e2e8f0'} strokeWidth="1" strokeDasharray="3 3" />
+                    <line x1="40" y1="250" x2="480" y2="250" stroke={isDark ? '#334155' : '#cbd5e1'} strokeWidth="1.5" />
+                    <line x1="40" y1="135" x2="480" y2="135" stroke={isDark ? '#1e293b' : '#e2e8f0'} strokeWidth="1" strokeDasharray="3 3" />
+                    <line x1="260" y1="20" x2="260" y2="250" stroke={isDark ? '#1e293b' : '#e2e8f0'} strokeWidth="1" strokeDasharray="3 3" />
 
-                    <div className={`p-4 rounded-xl border flex flex-col justify-between ${
-                      isDark ? 'bg-white/[0.03] border-white/10' : 'bg-slate-50 border-slate-200'
-                    }`}>
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className={`text-[11px] font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                            Live Action
-                          </span>
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        </div>
-                        <h4 className={`font-extrabold text-sm mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                          Launch Segmentation
-                        </h4>
-                        <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                          Upload real customer data and partition cohorts in seconds.
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => onGetStarted('segmentation')}
-                        className="mt-3 w-full py-2.5 px-4 rounded-lg bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-brand-500/25 flex items-center justify-center space-x-2"
-                      >
-                        <span>Start Clustering</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                /* Graphic Clustering Scatter Canvas Visual */
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-                  
-                  {/* 2D Illustrative Multi-Cluster Visual Canvas */}
-                  <div className={`lg:col-span-2 relative rounded-xl border p-5 overflow-hidden ${
-                    isDark 
-                      ? 'bg-[#060A12] border-white/10' 
-                      : 'bg-slate-50 border-slate-200'
+                    {/* Axis Labels */}
+                    <text x="250" y="272" fill={isDark ? '#64748b' : '#475569'} fontSize="10" textAnchor="middle" fontWeight="600">Annual Income (k$) &rarr;</text>
+                    <text x="18" y="140" fill={isDark ? '#64748b' : '#475569'} fontSize="10" transform="rotate(-90 18,140)" textAnchor="middle" fontWeight="600">Spending Score &rarr;</text>
+
+                    {/* Cluster 0: Moderate Balancers (Middle) */}
+                    <circle cx="260" cy="135" r="45" fill="url(#gradCluster0)" />
+                    <circle cx="250" cy="130" r="3.5" fill="#818cf8" />
+                    <circle cx="270" cy="140" r="4" fill="#818cf8" />
+                    <circle cx="240" cy="145" r="3" fill="#818cf8" />
+                    <circle cx="275" cy="125" r="3.5" fill="#818cf8" />
+                    <circle cx="255" cy="150" r="3" fill="#818cf8" />
+                    {/* Centroid 0 */}
+                    <polygon points="260,130 265,135 260,140 255,135" fill="#ffffff" stroke="#4f46e5" strokeWidth="2" />
+
+                    {/* Cluster 1: VIP Affluent (Top Right) */}
+                    <circle cx="400" cy="60" r="45" fill="url(#gradCluster1)" />
+                    <circle cx="390" cy="50" r="4" fill="#34d399" />
+                    <circle cx="410" cy="70" r="3.5" fill="#34d399" />
+                    <circle cx="420" cy="55" r="3" fill="#34d399" />
+                    <circle cx="385" cy="65" r="3.5" fill="#34d399" />
+                    <circle cx="405" cy="45" r="4" fill="#34d399" />
+                    {/* Centroid 1 */}
+                    <polygon points="400,55 405,60 400,65 395,60" fill="#ffffff" stroke="#10b981" strokeWidth="2" />
+
+                    {/* Cluster 2: Aspirational (Top Left) */}
+                    <circle cx="110" cy="60" r="45" fill="url(#gradCluster2)" />
+                    <circle cx="100" cy="55" r="3.5" fill="#fbbf24" />
+                    <circle cx="120" cy="70" r="4" fill="#fbbf24" />
+                    <circle cx="95" cy="65" r="3" fill="#fbbf24" />
+                    <circle cx="125" cy="50" r="3.5" fill="#fbbf24" />
+                    {/* Centroid 2 */}
+                    <polygon points="110,55 115,60 110,65 105,60" fill="#ffffff" stroke="#f59e0b" strokeWidth="2" />
+
+                    {/* Cluster 3: Cautious Savers (Bottom Right) */}
+                    <circle cx="400" cy="205" r="45" fill="url(#gradCluster3)" />
+                    <circle cx="390" cy="215" r="3.5" fill="#22d3ee" />
+                    <circle cx="415" cy="195" r="4" fill="#22d3ee" />
+                    <circle cx="380" cy="200" r="3" fill="#22d3ee" />
+                    <circle cx="420" cy="210" r="3.5" fill="#22d3ee" />
+                    {/* Centroid 3 */}
+                    <polygon points="400,200 405,205 400,210 395,205" fill="#ffffff" stroke="#06b6d4" strokeWidth="2" />
+
+                    {/* Cluster 4: Budget Seekers (Bottom Left) */}
+                    <circle cx="110" cy="205" r="45" fill="url(#gradCluster4)" />
+                    <circle cx="105" cy="195" r="3.5" fill="#f472b6" />
+                    <circle cx="120" cy="215" r="4" fill="#f472b6" />
+                    <circle cx="95" cy="210" r="3" fill="#f472b6" />
+                    <circle cx="125" cy="200" r="3" fill="#f472b6" />
+                    {/* Centroid 4 */}
+                    <polygon points="110,200 115,205 110,210 105,205" fill="#ffffff" stroke="#ec4899" strokeWidth="2" />
+                  </svg>
+
+                  {/* Legend Footer */}
+                  <div className={`flex flex-wrap items-center justify-between text-[11px] pt-2 border-t ${
+                    isDark ? 'border-white/5 text-slate-400' : 'border-slate-200 text-slate-600'
                   }`}>
-                    <div className="flex items-center justify-between mb-3 text-xs">
-                      <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                        Customer Multi-Cluster Scatter Space (Annual Income vs Spending Score)
-                      </span>
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
-                        isDark 
-                          ? 'text-brand-400 bg-brand-500/10 border-brand-500/20' 
-                          : 'text-brand-700 bg-brand-50 border-brand-200'
-                      }`}>
-                        Live Centroid Preview
-                      </span>
-                    </div>
-
-                    {/* SVG Cluster Plot */}
-                    <svg viewBox="0 0 500 280" className="w-full h-64 overflow-visible">
-                      <defs>
-                        <radialGradient id="gradCluster0" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="#4f46e5" stopOpacity="0.8"/>
-                          <stop offset="100%" stopColor="#4f46e5" stopOpacity="0"/>
-                        </radialGradient>
-                        <radialGradient id="gradCluster1" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="#10b981" stopOpacity="0.8"/>
-                          <stop offset="100%" stopColor="#10b981" stopOpacity="0"/>
-                        </radialGradient>
-                        <radialGradient id="gradCluster2" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.8"/>
-                          <stop offset="100%" stopColor="#f59e0b" stopOpacity="0"/>
-                        </radialGradient>
-                        <radialGradient id="gradCluster3" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.8"/>
-                          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0"/>
-                        </radialGradient>
-                        <radialGradient id="gradCluster4" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="#ec4899" stopOpacity="0.8"/>
-                          <stop offset="100%" stopColor="#ec4899" stopOpacity="0"/>
-                        </radialGradient>
-                      </defs>
-
-                      {/* Grid Lines */}
-                      <line x1="40" y1="20" x2="40" y2="250" stroke={isDark ? '#1e293b' : '#e2e8f0'} strokeWidth="1" strokeDasharray="3 3" />
-                      <line x1="40" y1="250" x2="480" y2="250" stroke={isDark ? '#334155' : '#cbd5e1'} strokeWidth="1.5" />
-                      <line x1="40" y1="135" x2="480" y2="135" stroke={isDark ? '#1e293b' : '#e2e8f0'} strokeWidth="1" strokeDasharray="3 3" />
-                      <line x1="260" y1="20" x2="260" y2="250" stroke={isDark ? '#1e293b' : '#e2e8f0'} strokeWidth="1" strokeDasharray="3 3" />
-
-                      {/* Axis Labels */}
-                      <text x="250" y="272" fill={isDark ? '#64748b' : '#475569'} fontSize="10" textAnchor="middle" fontWeight="600">Annual Income (k$) &rarr;</text>
-                      <text x="18" y="140" fill={isDark ? '#64748b' : '#475569'} fontSize="10" transform="rotate(-90 18,140)" textAnchor="middle" fontWeight="600">Spending Score &rarr;</text>
-
-                      {/* Cluster 0: Moderate Balancers (Middle) */}
-                      <circle cx="260" cy="135" r="45" fill="url(#gradCluster0)" />
-                      <circle cx="250" cy="130" r="3.5" fill="#818cf8" />
-                      <circle cx="270" cy="140" r="4" fill="#818cf8" />
-                      <circle cx="240" cy="145" r="3" fill="#818cf8" />
-                      <circle cx="275" cy="125" r="3.5" fill="#818cf8" />
-                      <circle cx="255" cy="150" r="3" fill="#818cf8" />
-                      {/* Centroid 0 */}
-                      <polygon points="260,130 265,135 260,140 255,135" fill="#ffffff" stroke="#4f46e5" strokeWidth="2" />
-
-                      {/* Cluster 1: VIP Affluent (Top Right) */}
-                      <circle cx="400" cy="60" r="45" fill="url(#gradCluster1)" />
-                      <circle cx="390" cy="50" r="4" fill="#34d399" />
-                      <circle cx="410" cy="70" r="3.5" fill="#34d399" />
-                      <circle cx="420" cy="55" r="3" fill="#34d399" />
-                      <circle cx="385" cy="65" r="3.5" fill="#34d399" />
-                      <circle cx="405" cy="45" r="4" fill="#34d399" />
-                      {/* Centroid 1 */}
-                      <polygon points="400,55 405,60 400,65 395,60" fill="#ffffff" stroke="#10b981" strokeWidth="2" />
-
-                      {/* Cluster 2: Aspirational (Top Left) */}
-                      <circle cx="110" cy="60" r="45" fill="url(#gradCluster2)" />
-                      <circle cx="100" cy="55" r="3.5" fill="#fbbf24" />
-                      <circle cx="120" cy="70" r="4" fill="#fbbf24" />
-                      <circle cx="95" cy="65" r="3" fill="#fbbf24" />
-                      <circle cx="125" cy="50" r="3.5" fill="#fbbf24" />
-                      {/* Centroid 2 */}
-                      <polygon points="110,55 115,60 110,65 105,60" fill="#ffffff" stroke="#f59e0b" strokeWidth="2" />
-
-                      {/* Cluster 3: Cautious Savers (Bottom Right) */}
-                      <circle cx="400" cy="205" r="45" fill="url(#gradCluster3)" />
-                      <circle cx="390" cy="215" r="3.5" fill="#22d3ee" />
-                      <circle cx="415" cy="195" r="4" fill="#22d3ee" />
-                      <circle cx="380" cy="200" r="3" fill="#22d3ee" />
-                      <circle cx="420" cy="210" r="3.5" fill="#22d3ee" />
-                      {/* Centroid 3 */}
-                      <polygon points="400,200 405,205 400,210 395,205" fill="#ffffff" stroke="#06b6d4" strokeWidth="2" />
-
-                      {/* Cluster 4: Budget Seekers (Bottom Left) */}
-                      <circle cx="110" cy="205" r="45" fill="url(#gradCluster4)" />
-                      <circle cx="105" cy="195" r="3.5" fill="#f472b6" />
-                      <circle cx="120" cy="215" r="4" fill="#f472b6" />
-                      <circle cx="95" cy="210" r="3" fill="#f472b6" />
-                      <circle cx="125" cy="200" r="3" fill="#f472b6" />
-                      {/* Centroid 4 */}
-                      <polygon points="110,200 115,205 110,210 105,205" fill="#ffffff" stroke="#ec4899" strokeWidth="2" />
-                    </svg>
-
-                    {/* Legend Footer */}
-                    <div className={`flex flex-wrap items-center justify-between text-[11px] pt-2 border-t ${
-                      isDark ? 'border-white/5 text-slate-400' : 'border-slate-200 text-slate-600'
-                    }`}>
-                      <span className="flex items-center space-x-1">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
-                        <span>VIP Spenders</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
-                        <span>Aspirational</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 inline-block" />
-                        <span>Cautious Savers</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <span className="w-2.5 h-2.5 rounded-full bg-pink-500 inline-block" />
-                        <span>Budget Seekers</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block" />
-                        <span>Core Balancers</span>
-                      </span>
-                    </div>
+                    <span className="flex items-center space-x-1">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+                      <span>VIP Spenders</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
+                      <span>Aspirational</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 inline-block" />
+                      <span>Cautious Savers</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <span className="w-2.5 h-2.5 rounded-full bg-pink-500 inline-block" />
+                      <span>Budget Seekers</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block" />
+                      <span>Core Balancers</span>
+                    </span>
                   </div>
-
-                  {/* Right Interactive Actions & Real-Time Stats */}
-                  <div className="space-y-4">
-                    <div className={`p-4 rounded-xl border ${
-                      isDark ? 'bg-white/[0.04] border-white/10' : 'bg-slate-50 border-slate-200'
-                    }`}>
-                      <span className={`text-[11px] font-bold uppercase tracking-wider ${
-                        isDark ? 'text-slate-400' : 'text-slate-500'
-                      }`}>Algorithm Pipeline</span>
-                      <h4 className={`font-extrabold text-sm mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        Lloyd's K-Means ++
-                      </h4>
-                      <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                        Optimizes Within-Cluster Sum of Squares (WCSS) to partition customers into distinct behavioral centroids.
-                      </p>
-                    </div>
-
-                    <div className={`p-4 rounded-xl border ${
-                      isDark ? 'bg-white/[0.04] border-white/10' : 'bg-slate-50 border-slate-200'
-                    }`}>
-                      <span className={`text-[11px] font-bold uppercase tracking-wider ${
-                        isDark ? 'text-slate-400' : 'text-slate-500'
-                      }`}>Optimal K Selection</span>
-                      <div className="flex items-center justify-between mt-1">
-                        <span className="text-lg font-bold text-emerald-500">K = 5 Clusters</span>
-                        <span className={`text-[11px] px-2 py-0.5 rounded border font-mono ${
-                          isDark 
-                            ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' 
-                            : 'text-emerald-700 bg-emerald-50 border-emerald-200 font-semibold'
-                        }`}>
-                          Elbow Verified
-                        </span>
-                      </div>
-                      <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                        Detected via maximum second-derivative knee projection.
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => onGetStarted('segmentation')}
-                      className="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-brand-600/30 flex items-center justify-center space-x-2"
-                    >
-                      <span>Run Clustering Engine</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-
                 </div>
-              )}
+
+                {/* Right Interactive Actions & Real-Time Stats */}
+                <div className="space-y-4">
+                  <div className={`p-4 rounded-xl border ${
+                    isDark ? 'bg-white/[0.04] border-white/10' : 'bg-slate-50 border-slate-200'
+                  }`}>
+                    <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                      isDark ? 'text-slate-400' : 'text-slate-500'
+                    }`}>Algorithm Pipeline</span>
+                    <h4 className={`font-extrabold text-sm mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      Lloyd's K-Means ++
+                    </h4>
+                    <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      Optimizes Within-Cluster Sum of Squares (WCSS) to partition customers into distinct behavioral centroids.
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-xl border ${
+                    isDark ? 'bg-white/[0.04] border-white/10' : 'bg-slate-50 border-slate-200'
+                  }`}>
+                    <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                      isDark ? 'text-slate-400' : 'text-slate-500'
+                    }`}>Optimal K Selection</span>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-lg font-bold text-emerald-500">K = 5 Clusters</span>
+                      <span className={`text-[11px] px-2 py-0.5 rounded border font-mono ${
+                        isDark 
+                          ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' 
+                          : 'text-emerald-700 bg-emerald-50 border-emerald-200 font-semibold'
+                      }`}>
+                        Elbow Verified
+                      </span>
+                    </div>
+                    <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      Detected via maximum second-derivative knee projection.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => onGetStarted('segmentation')}
+                    className="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-brand-600/30 flex items-center justify-center space-x-2"
+                  >
+                    <span>Run Clustering Engine</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+              </div>
 
             </div>
           </div>
