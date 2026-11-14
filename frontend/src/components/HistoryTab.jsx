@@ -11,7 +11,9 @@ import {
   deleteAnalysisFromHistory, 
   updateAnalysisNotes,
   getHistoricalExportCsvUrl,
-  getHistoricalReportHtmlUrl
+  getHistoricalReportHtmlUrl,
+  downloadClientCsv,
+  openClientReportWindow
 } from '../api';
 
 export default function HistoryTab({ onLoadAnalysis, onNavigateTab }) {
@@ -313,28 +315,37 @@ export default function HistoryTab({ onLoadAnalysis, onNavigateTab }) {
                     {/* Secondary Actions */}
                     <div className="flex items-center space-x-2">
                       {/* View Report */}
-                      <a
-                        href={getHistoricalReportHtmlUrl(item.id)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium transition"
+                      <button
+                        onClick={() => {
+                          if (item.full_result) {
+                            openClientReportWindow(item.full_result, item.dataset_filename);
+                          } else {
+                            window.open(getHistoricalReportHtmlUrl(item.id), '_blank');
+                          }
+                        }}
+                        className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium transition cursor-pointer"
                         title="View Saved Report"
                       >
                         <Printer className="w-3.5 h-3.5 mr-1 text-slate-500" />
                         <span>Report</span>
                         <ExternalLink className="w-3 h-3 ml-1 text-slate-400" />
-                      </a>
+                      </button>
 
                       {/* Export CSV */}
-                      <a
-                        href={getHistoricalExportCsvUrl(item.id)}
-                        download
-                        className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium transition"
+                      <button
+                        onClick={() => {
+                          if (item.full_result?.clustered_data_sample) {
+                            downloadClientCsv(item.full_result.clustered_data_sample, `${item.dataset_filename.replace(/\.[^/.]+$/, '')}_analysis_${item.id}.csv`);
+                          } else {
+                            window.open(getHistoricalExportCsvUrl(item.id), '_blank');
+                          }
+                        }}
+                        className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium transition cursor-pointer"
                         title="Download Clustered Customers"
                       >
                         <Download className="w-3.5 h-3.5 mr-1 text-slate-500" />
                         <span>CSV</span>
-                      </a>
+                      </button>
 
                       {/* Delete */}
                       <button

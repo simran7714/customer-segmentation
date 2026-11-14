@@ -153,9 +153,12 @@ export default function App() {
   if (currentView === 'landing') {
     return (
       <LandingPage
-        onGetStarted={(targetTab = 'dashboard') => {
+        onGetStarted={async (targetTab = 'dashboard') => {
           setCurrentView('dashboard');
           if (targetTab) setActiveTab(targetTab);
+          if (!datasetInfo) {
+            await loadSampleBenchmark('Mall_Customers.csv', 'drop', true);
+          }
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       />

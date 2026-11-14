@@ -3,7 +3,7 @@ import {
   Search, Filter, Download, ArrowUpDown, ChevronLeft, 
   ChevronRight, AlertCircle, FileSpreadsheet, Users 
 } from 'lucide-react';
-import { getExportCsvUrl } from '../api';
+import { getExportCsvUrl, downloadClientCsv } from '../api';
 
 export default function RecordsTab({ clusterResult, insights, onNavigateTab }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -91,14 +91,19 @@ export default function RecordsTab({ clusterResult, insights, onNavigateTab }) {
         </div>
 
         {/* CSV Export Button */}
-        <a
-          href={getExportCsvUrl()}
-          download
-          className="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition shadow-sm self-start sm:self-auto"
+        <button
+          onClick={() => {
+            if (clusterResult?.clustered_data_sample) {
+              downloadClientCsv(clusterResult.clustered_data_sample, 'clustered_customers.csv');
+            } else {
+              window.open(getExportCsvUrl(), '_blank');
+            }
+          }}
+          className="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition shadow-sm self-start sm:self-auto cursor-pointer"
         >
           <Download className="w-3.5 h-3.5 mr-1.5" />
           <span>Export Clustered Dataset (CSV)</span>
-        </a>
+        </button>
       </div>
 
       {/* Filter and Search Bar */}

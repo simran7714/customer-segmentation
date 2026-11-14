@@ -3,7 +3,7 @@ import {
   FileText, Download, Printer, ExternalLink, AlertTriangle, 
   Lightbulb, Sparkles, CheckCircle2, ShieldCheck, Database, Layers 
 } from 'lucide-react';
-import { getReportHtmlUrl, getExportCsvUrl } from '../api';
+import { getReportHtmlUrl, getExportCsvUrl, downloadClientCsv, openClientReportWindow } from '../api';
 
 export default function ReportsTab({ datasetInfo, clusterResult, insights, onNavigateTab }) {
   if (!clusterResult || !insights) {
@@ -25,7 +25,15 @@ export default function ReportsTab({ datasetInfo, clusterResult, insights, onNav
   }
 
   const handleOpenReportWindow = () => {
-    window.open(getReportHtmlUrl(), '_blank');
+    openClientReportWindow(clusterResult, datasetInfo?.filename || 'Mall_Customers.csv');
+  };
+
+  const handleDownloadCsv = () => {
+    if (clusterResult?.clustered_data_sample) {
+      downloadClientCsv(clusterResult.clustered_data_sample, `${(datasetInfo?.filename || 'clustered').replace(/\.[^/.]+$/, '')}_segmented.csv`);
+    } else {
+      window.open(getExportCsvUrl(), '_blank');
+    }
   };
 
   return (
@@ -44,7 +52,7 @@ export default function ReportsTab({ datasetInfo, clusterResult, insights, onNav
           {/* Print / View PDF Report */}
           <button
             onClick={handleOpenReportWindow}
-            className="inline-flex items-center px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition shadow-sm"
+            className="inline-flex items-center px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition shadow-sm cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5 mr-1.5" />
             <span>Open & Print PDF Report</span>
@@ -52,14 +60,13 @@ export default function ReportsTab({ datasetInfo, clusterResult, insights, onNav
           </button>
 
           {/* Export CSV */}
-          <a
-            href={getExportCsvUrl()}
-            download
-            className="inline-flex items-center px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition shadow-sm"
+          <button
+            onClick={handleDownloadCsv}
+            className="inline-flex items-center px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition shadow-sm cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 mr-1.5" />
             <span>Download Clustered CSV</span>
-          </a>
+          </button>
         </div>
       </div>
 

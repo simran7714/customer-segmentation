@@ -5,7 +5,7 @@ import {
   ChevronRight, CheckCircle2, ShieldCheck, FileText, 
   Activity, Code2, ExternalLink, Zap, Compass, 
   HelpCircle, Mail, DollarSign, Award, ChevronDown,
-  Sun, Moon
+  Sun, Moon, Menu, X, ArrowUp, Send, Github, Phone
 } from 'lucide-react';
 
 export default function LandingPage({ onGetStarted }) {
@@ -15,6 +15,10 @@ export default function LandingPage({ onGetStarted }) {
     return saved || 'dark';
   });
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '', submitted: false });
+
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
@@ -22,6 +26,27 @@ export default function LandingPage({ onGetStarted }) {
   };
 
   const isDark = theme === 'dark';
+
+  const scrollToSection = (id) => {
+    setMobileMenuOpen(false);
+    if (id === 'top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    setContactForm(prev => ({ ...prev, submitted: true }));
+    setTimeout(() => {
+      setContactForm({ name: '', email: '', message: '', submitted: false });
+      setContactModalOpen(false);
+    }, 2200);
+  };
 
   return (
     <div className={`min-h-screen font-sans selection:bg-brand-500 selection:text-white relative overflow-hidden transition-colors duration-300 ${
@@ -78,19 +103,20 @@ export default function LandingPage({ onGetStarted }) {
             </div>
 
             {/* Nav Links */}
-            <div className={`hidden md:flex items-center space-x-8 text-sm font-medium ${
+            <div className={`hidden md:flex items-center space-x-7 text-sm font-medium ${
               isDark ? 'text-slate-300' : 'text-slate-600'
             }`}>
-              <a href="#about" className={`hover:text-brand-500 transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>About</a>
-              <a href="#features" className={`hover:text-brand-500 transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Features</a>
-              <a href="#how-it-works" className={`hover:text-brand-500 transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>How It Works</a>
-              <a href="#segments" className={`hover:text-brand-500 transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Segments</a>
-              <a href="#technology" className={`hover:text-brand-500 transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Technology</a>
-              <a href="#contact" className={`hover:text-brand-500 transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Contact</a>
+              <button onClick={() => scrollToSection('top')} className={`hover:text-brand-500 transition font-semibold ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Home</button>
+              <button onClick={() => scrollToSection('about')} className={`hover:text-brand-500 transition font-semibold ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>About</button>
+              <button onClick={() => scrollToSection('features')} className={`hover:text-brand-500 transition font-semibold ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Features</button>
+              <button onClick={() => scrollToSection('how-it-works')} className={`hover:text-brand-500 transition font-semibold ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>How It Works</button>
+              <button onClick={() => scrollToSection('segments')} className={`hover:text-brand-500 transition font-semibold ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Segments</button>
+              <button onClick={() => scrollToSection('technology')} className={`hover:text-brand-500 transition font-semibold ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Technology</button>
+              <button onClick={() => setContactModalOpen(true)} className={`hover:text-brand-500 transition font-semibold ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Contact</button>
             </div>
 
             {/* Right Controls: Theme Toggle & Launch CTA */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2.5 sm:space-x-3">
               
               {/* Theme Toggle Button */}
               <button
@@ -113,18 +139,54 @@ export default function LandingPage({ onGetStarted }) {
               {/* Launch CTA */}
               <button
                 onClick={() => onGetStarted('dashboard')}
-                className="relative group inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-sm text-white overflow-hidden shadow-lg shadow-brand-500/20 transition-all hover:scale-[1.02]"
+                className="relative group inline-flex items-center justify-center px-4 sm:px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white overflow-hidden shadow-lg shadow-brand-500/20 transition-all hover:scale-[1.02]"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 group-hover:from-brand-500 group-hover:to-purple-500 transition-all duration-300" />
-                <span className="relative flex items-center space-x-2">
+                <span className="relative flex items-center space-x-1.5 sm:space-x-2">
                   <span>Get Started</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </span>
+              </button>
+
+              {/* Mobile Hamburger Menu Button */}
+              <button
+                onClick={() => setMobileMenuOpen(prev => !prev)}
+                className={`md:hidden p-2.5 rounded-xl border transition-all flex items-center justify-center ${
+                  isDark
+                    ? 'bg-white/[0.06] hover:bg-white/[0.12] border-white/10 text-white'
+                    : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                }`}
+                aria-label="Toggle Mobile Menu"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
 
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className={`md:hidden border-t px-6 py-5 space-y-3 backdrop-blur-2xl transition-all ${
+            isDark ? 'bg-[#070B14]/95 border-white/10 text-slate-200' : 'bg-white/95 border-slate-200 text-slate-800 shadow-lg'
+          }`}>
+            <button onClick={() => scrollToSection('top')} className="block w-full text-left py-2 font-semibold hover:text-brand-500 transition">Home</button>
+            <button onClick={() => scrollToSection('about')} className="block w-full text-left py-2 font-semibold hover:text-brand-500 transition">About Methodology</button>
+            <button onClick={() => scrollToSection('features')} className="block w-full text-left py-2 font-semibold hover:text-brand-500 transition">Features</button>
+            <button onClick={() => scrollToSection('how-it-works')} className="block w-full text-left py-2 font-semibold hover:text-brand-500 transition">How It Works</button>
+            <button onClick={() => scrollToSection('segments')} className="block w-full text-left py-2 font-semibold hover:text-brand-500 transition">Customer Segments</button>
+            <button onClick={() => scrollToSection('technology')} className="block w-full text-left py-2 font-semibold hover:text-brand-500 transition">Technologies Used</button>
+            <button onClick={() => { setMobileMenuOpen(false); setContactModalOpen(true); }} className="block w-full text-left py-2 font-semibold text-brand-500 transition">Contact Project Lead</button>
+            <div className="pt-2">
+              <button
+                onClick={() => { setMobileMenuOpen(false); onGetStarted('dashboard'); }}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-bold text-center text-sm shadow-md"
+              >
+                Launch Live Dashboard &rarr;
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* ========================================================================= */}
@@ -595,117 +657,171 @@ export default function LandingPage({ onGetStarted }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Feature 1 */}
-            <div className={`p-6 rounded-2xl border transition-all duration-300 group ${
+            <div className={`p-6 rounded-2xl border transition-all duration-300 group flex flex-col justify-between ${
               isDark 
                 ? 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.08] hover:border-brand-500/30' 
                 : 'bg-white hover:bg-slate-50 border-slate-200 shadow-sm hover:shadow-md'
             }`}>
-              <div className="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Database className="w-6 h-6" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <Database className="w-6 h-6" />
+                </div>
+                <h3 className={`font-bold text-lg transition-colors ${
+                  isDark ? 'text-white group-hover:text-brand-300' : 'text-slate-900 group-hover:text-brand-600'
+                }`}>
+                  Customer Data Analysis
+                </h3>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Ingest CSV and Excel files with automated schema detection, missing value imputation (Mean, Median, or Drop), and descriptive parametric statistics.
+                </p>
               </div>
-              <h3 className={`font-bold text-lg transition-colors ${
-                isDark ? 'text-white group-hover:text-brand-300' : 'text-slate-900 group-hover:text-brand-600'
-              }`}>
-                Customer Data Analysis
-              </h3>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Ingest CSV and Excel files with automated schema detection, missing value imputation (Mean, Median, or Drop), and descriptive parametric statistics.
-              </p>
+              <button
+                onClick={() => onGetStarted('analysis')}
+                className="mt-5 inline-flex items-center text-xs font-semibold text-brand-500 hover:text-brand-400 group-hover:translate-x-1 transition-all"
+              >
+                <span>Launch EDA Analysis</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Feature 2 */}
-            <div className={`p-6 rounded-2xl border transition-all duration-300 group ${
+            <div className={`p-6 rounded-2xl border transition-all duration-300 group flex flex-col justify-between ${
               isDark 
                 ? 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.08] hover:border-purple-500/30' 
                 : 'bg-white hover:bg-slate-50 border-slate-200 shadow-sm hover:shadow-md'
             }`}>
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Target className="w-6 h-6" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <Target className="w-6 h-6" />
+                </div>
+                <h3 className={`font-bold text-lg transition-colors ${
+                  isDark ? 'text-white group-hover:text-purple-300' : 'text-slate-900 group-hover:text-purple-600'
+                }`}>
+                  Intelligent Customer Segmentation
+                </h3>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Partition customer records dynamically based on multidimensional feature vectors without prior label requirements or hardcoded thresholds.
+                </p>
               </div>
-              <h3 className={`font-bold text-lg transition-colors ${
-                isDark ? 'text-white group-hover:text-purple-300' : 'text-slate-900 group-hover:text-purple-600'
-              }`}>
-                Intelligent Customer Segmentation
-              </h3>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Partition customer records dynamically based on multidimensional feature vectors without prior label requirements or hardcoded thresholds.
-              </p>
+              <button
+                onClick={() => onGetStarted('segmentation')}
+                className="mt-5 inline-flex items-center text-xs font-semibold text-purple-500 hover:text-purple-400 group-hover:translate-x-1 transition-all"
+              >
+                <span>Configure Segmentation</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Feature 3 */}
-            <div className={`p-6 rounded-2xl border transition-all duration-300 group ${
+            <div className={`p-6 rounded-2xl border transition-all duration-300 group flex flex-col justify-between ${
               isDark 
                 ? 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.08] hover:border-cyan-500/30' 
                 : 'bg-white hover:bg-slate-50 border-slate-200 shadow-sm hover:shadow-md'
             }`}>
-              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Cpu className="w-6 h-6" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <Cpu className="w-6 h-6" />
+                </div>
+                <h3 className={`font-bold text-lg transition-colors ${
+                  isDark ? 'text-white group-hover:text-cyan-300' : 'text-slate-900 group-hover:text-cyan-600'
+                }`}>
+                  K-Means Clustering & Elbow Method
+                </h3>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Scientific determination of optimal cluster count ($K$) using Within-Cluster Sum of Squares (WCSS) and Silhouette Coefficient curves with knee detection.
+                </p>
               </div>
-              <h3 className={`font-bold text-lg transition-colors ${
-                isDark ? 'text-white group-hover:text-cyan-300' : 'text-slate-900 group-hover:text-cyan-600'
-              }`}>
-                K-Means Clustering & Elbow Method
-              </h3>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Scientific determination of optimal cluster count ($K$) using Within-Cluster Sum of Squares (WCSS) and Silhouette Coefficient curves with knee detection.
-              </p>
+              <button
+                onClick={() => onGetStarted('segmentation')}
+                className="mt-5 inline-flex items-center text-xs font-semibold text-cyan-500 hover:text-cyan-400 group-hover:translate-x-1 transition-all"
+              >
+                <span>Run Elbow & K-Means</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Feature 4 */}
-            <div className={`p-6 rounded-2xl border transition-all duration-300 group ${
+            <div className={`p-6 rounded-2xl border transition-all duration-300 group flex flex-col justify-between ${
               isDark 
                 ? 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.08] hover:border-emerald-500/30' 
                 : 'bg-white hover:bg-slate-50 border-slate-200 shadow-sm hover:shadow-md'
             }`}>
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <BarChart3 className="w-6 h-6" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <BarChart3 className="w-6 h-6" />
+                </div>
+                <h3 className={`font-bold text-lg transition-colors ${
+                  isDark ? 'text-white group-hover:text-emerald-300' : 'text-slate-900 group-hover:text-emerald-600'
+                }`}>
+                  Interactive Data Visualization
+                </h3>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Immersive 2D projections with marked cluster centroids (◆) alongside full 360-degree rotating 3D WebGL spatial models and profile radar charts.
+                </p>
               </div>
-              <h3 className={`font-bold text-lg transition-colors ${
-                isDark ? 'text-white group-hover:text-emerald-300' : 'text-slate-900 group-hover:text-emerald-600'
-              }`}>
-                Interactive Data Visualization
-              </h3>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Immersive 2D projections with marked cluster centroids (◆) alongside full 360-degree rotating 3D WebGL spatial models and profile radar charts.
-              </p>
+              <button
+                onClick={() => onGetStarted('visualizations')}
+                className="mt-5 inline-flex items-center text-xs font-semibold text-emerald-500 hover:text-emerald-400 group-hover:translate-x-1 transition-all"
+              >
+                <span>View 2D / 3D Visualizer</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Feature 5 */}
-            <div className={`p-6 rounded-2xl border transition-all duration-300 group ${
+            <div className={`p-6 rounded-2xl border transition-all duration-300 group flex flex-col justify-between ${
               isDark 
                 ? 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.08] hover:border-amber-500/30' 
                 : 'bg-white hover:bg-slate-50 border-slate-200 shadow-sm hover:shadow-md'
             }`}>
-              <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-6 h-6" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+                <h3 className={`font-bold text-lg transition-colors ${
+                  isDark ? 'text-white group-hover:text-amber-300' : 'text-slate-900 group-hover:text-amber-600'
+                }`}>
+                  Customer Behaviour Analysis
+                </h3>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Analyze income vs spending elasticity, purchasing frequency, age-demographic patterns, and inter-attribute Pearson correlation matrices.
+                </p>
               </div>
-              <h3 className={`font-bold text-lg transition-colors ${
-                isDark ? 'text-white group-hover:text-amber-300' : 'text-slate-900 group-hover:text-amber-600'
-              }`}>
-                Customer Behaviour Analysis
-              </h3>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Analyze income vs spending elasticity, purchasing frequency, age-demographic patterns, and inter-attribute Pearson correlation matrices.
-              </p>
+              <button
+                onClick={() => onGetStarted('insights')}
+                className="mt-5 inline-flex items-center text-xs font-semibold text-amber-500 hover:text-amber-400 group-hover:translate-x-1 transition-all"
+              >
+                <span>Explore Behavioral Traits</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Feature 6 */}
-            <div className={`p-6 rounded-2xl border transition-all duration-300 group ${
+            <div className={`p-6 rounded-2xl border transition-all duration-300 group flex flex-col justify-between ${
               isDark 
                 ? 'bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.08] hover:border-rose-500/30' 
                 : 'bg-white hover:bg-slate-50 border-slate-200 shadow-sm hover:shadow-md'
             }`}>
-              <div className="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <FileText className="w-6 h-6" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <h3 className={`font-bold text-lg transition-colors ${
+                  isDark ? 'text-white group-hover:text-rose-300' : 'text-slate-900 group-hover:text-rose-600'
+                }`}>
+                  Business Insights and Reports
+                </h3>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Generate downloadable executive analytical reports formatted for PDF printing, export clustered CSV datasets, and receive tailored marketing actions.
+                </p>
               </div>
-              <h3 className={`font-bold text-lg transition-colors ${
-                isDark ? 'text-white group-hover:text-rose-300' : 'text-slate-900 group-hover:text-rose-600'
-              }`}>
-                Business Insights and Reports
-              </h3>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Generate downloadable executive analytical reports formatted for PDF printing, export clustered CSV datasets, and receive tailored marketing actions.
-              </p>
+              <button
+                onClick={() => onGetStarted('reports')}
+                className="mt-5 inline-flex items-center text-xs font-semibold text-rose-500 hover:text-rose-400 group-hover:translate-x-1 transition-all"
+              >
+                <span>Generate Executive Report</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
           </div>
@@ -743,81 +859,129 @@ export default function LandingPage({ onGetStarted }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Step 1 */}
-            <div className={`p-6 rounded-2xl border relative ${
-              isDark ? 'bg-[#090E1A] border-white/10' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className="w-8 h-8 rounded-full bg-brand-500/20 text-brand-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-brand-500/40">
-                01
+            <div 
+              onClick={() => onGetStarted('upload')}
+              className={`p-6 rounded-2xl border relative flex flex-col justify-between cursor-pointer transition group hover:scale-[1.02] ${
+                isDark ? 'bg-[#090E1A] hover:bg-[#0c1322] border-white/10 hover:border-brand-500/40' : 'bg-slate-50 hover:bg-white border-slate-200 hover:border-brand-300 shadow-sm hover:shadow'
+              }`}
+            >
+              <div>
+                <div className="w-8 h-8 rounded-full bg-brand-500/20 text-brand-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-brand-500/40">
+                  01
+                </div>
+                <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Upload Customer Dataset</h4>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Ingest your customer database via drag-and-drop CSV or Excel (.xlsx) file, or load pre-packaged benchmark datasets with 1-click.
+                </p>
               </div>
-              <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Upload Customer Dataset</h4>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Ingest your customer database via drag-and-drop CSV or Excel (.xlsx) file, or load pre-packaged benchmark datasets with 1-click.
-              </p>
+              <span className="mt-4 text-xs font-semibold text-brand-500 group-hover:translate-x-1 transition-transform inline-flex items-center">
+                Open Dataset Ingestion &rarr;
+              </span>
             </div>
 
             {/* Step 2 */}
-            <div className={`p-6 rounded-2xl border relative ${
-              isDark ? 'bg-[#090E1A] border-white/10' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-indigo-500/40">
-                02
+            <div 
+              onClick={() => onGetStarted('upload')}
+              className={`p-6 rounded-2xl border relative flex flex-col justify-between cursor-pointer transition group hover:scale-[1.02] ${
+                isDark ? 'bg-[#090E1A] hover:bg-[#0c1322] border-white/10 hover:border-indigo-500/40' : 'bg-slate-50 hover:bg-white border-slate-200 hover:border-indigo-300 shadow-sm hover:shadow'
+              }`}
+            >
+              <div>
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-indigo-500/40">
+                  02
+                </div>
+                <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Data Preprocessing</h4>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Automated identification of customer ID columns, handling missing values via imputation or removal, and removing duplicate entries.
+                </p>
               </div>
-              <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Data Preprocessing</h4>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Automated identification of customer ID columns, handling missing values via imputation or removal, and removing duplicate entries.
-              </p>
+              <span className="mt-4 text-xs font-semibold text-indigo-500 group-hover:translate-x-1 transition-transform inline-flex items-center">
+                Inspect Preprocessing &rarr;
+              </span>
             </div>
 
             {/* Step 3 */}
-            <div className={`p-6 rounded-2xl border relative ${
-              isDark ? 'bg-[#090E1A] border-white/10' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-purple-500/40">
-                03
+            <div 
+              onClick={() => onGetStarted('segmentation')}
+              className={`p-6 rounded-2xl border relative flex flex-col justify-between cursor-pointer transition group hover:scale-[1.02] ${
+                isDark ? 'bg-[#090E1A] hover:bg-[#0c1322] border-white/10 hover:border-purple-500/40' : 'bg-slate-50 hover:bg-white border-slate-200 hover:border-purple-300 shadow-sm hover:shadow'
+              }`}
+            >
+              <div>
+                <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-purple-500/40">
+                  03
+                </div>
+                <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Feature Selection & Scaling</h4>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Select relevant behavioral features (Annual Income, Spending Score, Age) and apply normalization (`StandardScaler` or `MinMaxScaler`).
+                </p>
               </div>
-              <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Feature Selection & Scaling</h4>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Select relevant behavioral features (Annual Income, Spending Score, Age) and apply normalization (`StandardScaler` or `MinMaxScaler`).
-              </p>
+              <span className="mt-4 text-xs font-semibold text-purple-500 group-hover:translate-x-1 transition-transform inline-flex items-center">
+                Configure Features &rarr;
+              </span>
             </div>
 
             {/* Step 4 */}
-            <div className={`p-6 rounded-2xl border relative ${
-              isDark ? 'bg-[#090E1A] border-white/10' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-cyan-500/40">
-                04
+            <div 
+              onClick={() => onGetStarted('segmentation')}
+              className={`p-6 rounded-2xl border relative flex flex-col justify-between cursor-pointer transition group hover:scale-[1.02] ${
+                isDark ? 'bg-[#090E1A] hover:bg-[#0c1322] border-white/10 hover:border-cyan-500/40' : 'bg-slate-50 hover:bg-white border-slate-200 hover:border-cyan-300 shadow-sm hover:shadow'
+              }`}
+            >
+              <div>
+                <div className="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-cyan-500/40">
+                  04
+                </div>
+                <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>K-Means Clustering & Elbow</h4>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Execute Elbow Method to observe inertia drop, identify optimal elbow point, and initialize centroids using `k-means++`.
+                </p>
               </div>
-              <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>K-Means Clustering & Elbow</h4>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Execute Elbow Method to observe inertia drop, identify optimal elbow point, and initialize centroids using `k-means++`.
-              </p>
+              <span className="mt-4 text-xs font-semibold text-cyan-500 group-hover:translate-x-1 transition-transform inline-flex items-center">
+                Calculate Elbow Point &rarr;
+              </span>
             </div>
 
             {/* Step 5 */}
-            <div className={`p-6 rounded-2xl border relative ${
-              isDark ? 'bg-[#090E1A] border-white/10' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-emerald-500/40">
-                05
+            <div 
+              onClick={() => onGetStarted('visualizations')}
+              className={`p-6 rounded-2xl border relative flex flex-col justify-between cursor-pointer transition group hover:scale-[1.02] ${
+                isDark ? 'bg-[#090E1A] hover:bg-[#0c1322] border-white/10 hover:border-emerald-500/40' : 'bg-slate-50 hover:bg-white border-slate-200 hover:border-emerald-300 shadow-sm hover:shadow'
+              }`}
+            >
+              <div>
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-emerald-500/40">
+                  05
+                </div>
+                <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Customer Segmentation</h4>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Convergence of centroids, label assignment to all customer rows, and interactive 2D / 3D spatial visualization.
+                </p>
               </div>
-              <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Customer Segmentation</h4>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Convergence of centroids, label assignment to all customer rows, and interactive 2D / 3D spatial visualization.
-              </p>
+              <span className="mt-4 text-xs font-semibold text-emerald-500 group-hover:translate-x-1 transition-transform inline-flex items-center">
+                Explore 2D / 3D Projections &rarr;
+              </span>
             </div>
 
             {/* Step 6 */}
-            <div className={`p-6 rounded-2xl border relative ${
-              isDark ? 'bg-[#090E1A] border-white/10' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className="w-8 h-8 rounded-full bg-rose-500/20 text-rose-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-rose-500/40">
-                06
+            <div 
+              onClick={() => onGetStarted('reports')}
+              className={`p-6 rounded-2xl border relative flex flex-col justify-between cursor-pointer transition group hover:scale-[1.02] ${
+                isDark ? 'bg-[#090E1A] hover:bg-[#0c1322] border-white/10 hover:border-rose-500/40' : 'bg-slate-50 hover:bg-white border-slate-200 hover:border-rose-300 shadow-sm hover:shadow'
+              }`}
+            >
+              <div>
+                <div className="w-8 h-8 rounded-full bg-rose-500/20 text-rose-500 font-extrabold text-xs flex items-center justify-center mb-4 ring-1 ring-rose-500/40">
+                  06
+                </div>
+                <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Business Insights & Reports</h4>
+                <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Generate strategic marketing tactics, assess customer retention risk, review persona archetypes, and export printable PDF reports.
+                </p>
               </div>
-              <h4 className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>Business Insights & Reports</h4>
-              <p className={`text-xs mt-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Generate strategic marketing tactics, assess customer retention risk, review persona archetypes, and export printable PDF reports.
-              </p>
+              <span className="mt-4 text-xs font-semibold text-rose-500 group-hover:translate-x-1 transition-transform inline-flex items-center">
+                Generate Reports &rarr;
+              </span>
             </div>
 
           </div>
@@ -868,118 +1032,163 @@ export default function LandingPage({ onGetStarted }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Persona 1 */}
-            <div className={`p-6 rounded-2xl border relative ${
+            <div className={`p-6 rounded-2xl border relative flex flex-col justify-between ${
               isDark 
                 ? 'bg-gradient-to-b from-white/[0.05] to-transparent border-emerald-500/20' 
                 : 'bg-white border-emerald-200 shadow-sm'
             }`}>
-              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 uppercase tracking-wider mb-3">
-                High Value Segment
-              </span>
-              <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                VIP / Affluent Spenders
-              </h4>
-              <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                High Income &bull; High Spending
-              </p>
-              <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                Customers with elevated financial resources and active purchasing velocity. They value brand prestige, early collection access, concierge service, and premium experiences over discounts.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-                Strategy: VIP Loyalty Programs & Bespoke Concierge
+              <div>
+                <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 uppercase tracking-wider mb-3">
+                  High Value Segment
+                </span>
+                <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  VIP / Affluent Spenders
+                </h4>
+                <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  High Income &bull; High Spending
+                </p>
+                <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  Customers with elevated financial resources and active purchasing velocity. They value brand prestige, early collection access, concierge service, and premium experiences over discounts.
+                </p>
+                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                  Strategy: VIP Loyalty Programs & Bespoke Concierge
+                </div>
               </div>
+              <button
+                onClick={() => onGetStarted('insights')}
+                className="mt-4 text-xs font-semibold text-emerald-500 hover:text-emerald-400 inline-flex items-center"
+              >
+                <span>Analyze VIP Cohort in Engine</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Persona 2 */}
-            <div className={`p-6 rounded-2xl border relative ${
+            <div className={`p-6 rounded-2xl border relative flex flex-col justify-between ${
               isDark 
                 ? 'bg-gradient-to-b from-white/[0.05] to-transparent border-cyan-500/20' 
                 : 'bg-white border-cyan-200 shadow-sm'
             }`}>
-              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 uppercase tracking-wider mb-3">
-                Untapped Potential
-              </span>
-              <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Cautious Savers
-              </h4>
-              <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                High Income &bull; Low Spending
-              </p>
-              <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                Financially affluent patrons who maintain disciplined, conservative spending habits. They evaluate utility, warranties, and longevity before committing to transactions.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-cyan-600 dark:text-cyan-400 font-semibold">
-                Strategy: Value-Centric Educational Proof & Guarantees
+              <div>
+                <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 uppercase tracking-wider mb-3">
+                  Untapped Potential
+                </span>
+                <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Cautious Savers
+                </h4>
+                <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  High Income &bull; Low Spending
+                </p>
+                <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  Financially affluent patrons who maintain disciplined, conservative spending habits. They evaluate utility, warranties, and longevity before committing to transactions.
+                </p>
+                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-cyan-600 dark:text-cyan-400 font-semibold">
+                  Strategy: Value-Centric Educational Proof & Guarantees
+                </div>
               </div>
+              <button
+                onClick={() => onGetStarted('insights')}
+                className="mt-4 text-xs font-semibold text-cyan-500 hover:text-cyan-400 inline-flex items-center"
+              >
+                <span>Analyze Savers Cohort in Engine</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Persona 3 */}
-            <div className={`p-6 rounded-2xl border relative ${
+            <div className={`p-6 rounded-2xl border relative flex flex-col justify-between ${
               isDark 
                 ? 'bg-gradient-to-b from-white/[0.05] to-transparent border-amber-500/20' 
                 : 'bg-white border-amber-200 shadow-sm'
             }`}>
-              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 uppercase tracking-wider mb-3">
-                High Velocity Volume
-              </span>
-              <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Aspirational Trend-Seekers
-              </h4>
-              <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Low Income &bull; High Spending
-              </p>
-              <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                Younger, trend-responsive buyers who allocate a high percentage of discretionary income toward lifestyle and viral collections.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-amber-600 dark:text-amber-400 font-semibold">
-                Strategy: Flexible BNPL Financing & Flash Drops
+              <div>
+                <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 uppercase tracking-wider mb-3">
+                  High Velocity Volume
+                </span>
+                <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Aspirational Trend-Seekers
+                </h4>
+                <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Low Income &bull; High Spending
+                </p>
+                <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  Younger, trend-responsive buyers who allocate a high percentage of discretionary income toward lifestyle and viral collections.
+                </p>
+                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-amber-600 dark:text-amber-400 font-semibold">
+                  Strategy: Flexible BNPL Financing & Flash Drops
+                </div>
               </div>
+              <button
+                onClick={() => onGetStarted('insights')}
+                className="mt-4 text-xs font-semibold text-amber-500 hover:text-amber-400 inline-flex items-center"
+              >
+                <span>Analyze Trend Cohort in Engine</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Persona 4 */}
-            <div className={`p-6 rounded-2xl border relative ${
+            <div className={`p-6 rounded-2xl border relative flex flex-col justify-between ${
               isDark 
                 ? 'bg-gradient-to-b from-white/[0.05] to-transparent border-slate-500/20' 
                 : 'bg-white border-slate-300 shadow-sm'
             }`}>
-              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-700 dark:text-slate-300 border border-slate-500/30 uppercase tracking-wider mb-3">
-                Price Sensitive
-              </span>
-              <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Budget-Conscious Seekers
-              </h4>
-              <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Low Income &bull; Low Spending
-              </p>
-              <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                Frugal buyers focused on essential utility and bargain opportunities. Highly responsive to discount coupons and bundle clearances.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
-                Strategy: Bundle Promotions & Referral Rewards
+              <div>
+                <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-700 dark:text-slate-300 border border-slate-500/30 uppercase tracking-wider mb-3">
+                  Price Sensitive
+                </span>
+                <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Budget-Conscious Seekers
+                </h4>
+                <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Low Income &bull; Low Spending
+                </p>
+                <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  Frugal buyers focused on essential utility and bargain opportunities. Highly responsive to discount coupons and bundle clearances.
+                </p>
+                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
+                  Strategy: Bundle Promotions & Referral Rewards
+                </div>
               </div>
+              <button
+                onClick={() => onGetStarted('insights')}
+                className="mt-4 text-xs font-semibold text-slate-400 hover:text-slate-300 inline-flex items-center"
+              >
+                <span>Analyze Budget Cohort in Engine</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
             {/* Persona 5 */}
-            <div className={`p-6 rounded-2xl border relative lg:col-span-2 ${
+            <div className={`p-6 rounded-2xl border relative lg:col-span-2 flex flex-col justify-between ${
               isDark 
                 ? 'bg-gradient-to-b from-white/[0.05] to-transparent border-indigo-500/20' 
                 : 'bg-white border-indigo-200 shadow-sm'
             }`}>
-              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-500/30 uppercase tracking-wider mb-3">
-                Core Revenue Anchor
-              </span>
-              <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Core Mainstream Balancers
-              </h4>
-              <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Moderate Income &bull; Moderate Spending
-              </p>
-              <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                The largest and most stable customer cohort. Reliable routine shoppers who appreciate dependability, fair pricing, and predictable product standards.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold">
-                Strategy: Milestone Loyalty Perks & Cross-Selling
+              <div>
+                <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-500/30 uppercase tracking-wider mb-3">
+                  Core Revenue Anchor
+                </span>
+                <h4 className={`font-extrabold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Core Mainstream Balancers
+                </h4>
+                <p className={`text-xs italic mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Moderate Income &bull; Moderate Spending
+                </p>
+                <p className={`text-xs mt-3 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  The largest and most stable customer cohort. Reliable routine shoppers who appreciate dependability, fair pricing, and predictable product standards.
+                </p>
+                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold">
+                  Strategy: Milestone Loyalty Perks & Cross-Selling
+                </div>
               </div>
+              <button
+                onClick={() => onGetStarted('insights')}
+                className="mt-4 text-xs font-semibold text-indigo-500 hover:text-indigo-400 inline-flex items-center"
+              >
+                <span>Analyze Core Balancers in Engine</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </button>
             </div>
 
           </div>
@@ -1135,7 +1344,7 @@ export default function LandingPage({ onGetStarted }) {
       {/* ========================================================================= */}
       {/* I. FOOTER & CONTACT SECTION                                               */}
       {/* ========================================================================= */}
-      <footer id="contact" className={`py-12 border-t text-xs transition-colors ${
+      <footer id="contact" className={`py-14 border-t text-xs transition-colors ${
         isDark 
           ? 'bg-[#05080F] border-white/[0.08] text-slate-400' 
           : 'bg-white border-slate-200 text-slate-500'
@@ -1145,7 +1354,7 @@ export default function LandingPage({ onGetStarted }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             
             {/* Col 1 */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-3">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 rounded-xl bg-brand-600 flex items-center justify-center text-white">
                   <Target className="w-4 h-4" />
@@ -1154,43 +1363,80 @@ export default function LandingPage({ onGetStarted }) {
                   Customer<span className="text-brand-500">Segmentation</span> System
                 </span>
               </div>
-              <p className={`mt-2 text-xs italic ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              <p className={`text-xs italic ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 "Understand Your Customers. Discover Business Opportunities."
               </p>
-              <p className={`mt-3 text-xs max-w-md leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <p className={`text-xs max-w-md leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 A major academic capstone project focusing on Unsupervised Machine Learning, Data Analytics, 3D Data Visualizations, and Automated Business Intelligence.
               </p>
+              <div className="pt-2 flex items-center space-x-3">
+                <button
+                  onClick={() => setContactModalOpen(true)}
+                  className="px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition shadow-sm flex items-center space-x-1.5"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Contact Project Lead</span>
+                </button>
+                <a
+                  href="https://github.com/simran7714/customer-segmentation"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`px-3 py-1.5 rounded-lg border transition text-xs font-medium flex items-center space-x-1.5 ${
+                    isDark ? 'border-white/10 hover:bg-white/5 text-slate-300' : 'border-slate-300 hover:bg-slate-50 text-slate-700'
+                  }`}
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  <span>GitHub Repository</span>
+                </a>
+              </div>
             </div>
 
             {/* Col 2 */}
             <div>
               <h5 className={`font-bold uppercase tracking-wider text-[11px] mb-3 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Navigation
+                Fast Navigation
               </h5>
               <ul className="space-y-2">
-                <li><a href="#about" className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>About Methodology</a></li>
-                <li><a href="#features" className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Core Features</a></li>
-                <li><a href="#how-it-works" className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Pipeline Workflow</a></li>
-                <li><a href="#segments" className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Customer Personas</a></li>
-                <li><a href="#technology" className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Technology Stack</a></li>
+                <li><button onClick={() => scrollToSection('top')} className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Back to Home</button></li>
+                <li><button onClick={() => scrollToSection('about')} className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>About Methodology</button></li>
+                <li><button onClick={() => scrollToSection('features')} className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Core Features</button></li>
+                <li><button onClick={() => scrollToSection('how-it-works')} className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Pipeline Workflow</button></li>
+                <li><button onClick={() => scrollToSection('segments')} className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Customer Personas</button></li>
+                <li><button onClick={() => scrollToSection('technology')} className={`transition ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>Technology Stack</button></li>
               </ul>
             </div>
 
             {/* Col 3 */}
             <div>
               <h5 className={`font-bold uppercase tracking-wider text-[11px] mb-3 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Project Demonstration
+                Project Actions
               </h5>
               <p className={`text-xs mb-3 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Computer Science and Engineering (CSE) &bull; Major Project
+                Computer Science and Engineering (CSE) &bull; Major Academic Project
               </p>
-              <button
-                onClick={() => onGetStarted('dashboard')}
-                className="inline-flex items-center text-xs font-semibold text-brand-500 hover:text-brand-600"
-              >
-                <span>Enter Live Dashboard</span>
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => onGetStarted('dashboard')}
+                  className="w-full text-left py-1.5 text-xs font-semibold text-brand-500 hover:text-brand-400 flex items-center justify-between"
+                >
+                  <span>Launch Live Dashboard</span>
+                  <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                </button>
+                <button
+                  onClick={() => onGetStarted('upload')}
+                  className="w-full text-left py-1.5 text-xs font-semibold text-indigo-500 hover:text-indigo-400 flex items-center justify-between"
+                >
+                  <span>Upload Customer Dataset</span>
+                  <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                </button>
+                <button
+                  onClick={() => onGetStarted('segmentation')}
+                  className="w-full text-left py-1.5 text-xs font-semibold text-emerald-500 hover:text-emerald-400 flex items-center justify-between"
+                >
+                  <span>Run K-Means Clustering</span>
+                  <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                </button>
+              </div>
             </div>
 
           </div>
@@ -1201,13 +1447,130 @@ export default function LandingPage({ onGetStarted }) {
             <p className="text-[11px]">
               &copy; {new Date().getFullYear()} Customer Segmentation System Using K-Means Clustering Algorithm. All rights reserved.
             </p>
-            <p className="text-[11px]">
-              Designed with React 18, Tailwind CSS, FastAPI, and Scikit-Learn.
-            </p>
+            <div className="flex items-center space-x-4">
+              <span className="text-[11px]">React 18 &bull; Tailwind &bull; FastAPI &bull; Scikit-Learn</span>
+              <button
+                onClick={() => scrollToSection('top')}
+                className={`p-2 rounded-lg border transition ${
+                  isDark ? 'border-white/10 hover:bg-white/10 text-white' : 'border-slate-300 hover:bg-slate-100 text-slate-700'
+                }`}
+                title="Scroll back to top"
+              >
+                <ArrowUp className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
         </div>
       </footer>
+
+      {/* ========================================================================= */}
+      {/* CONTACT MODAL                                                             */}
+      {/* ========================================================================= */}
+      {contactModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className={`relative w-full max-w-lg rounded-2xl border p-6 sm:p-8 shadow-2xl transition-colors ${
+            isDark ? 'bg-slate-900 border-white/20 text-white' : 'bg-white border-slate-200 text-slate-900'
+          }`}>
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setContactModalOpen(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg"
+              aria-label="Close Contact Modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white">
+                <Mail className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-lg">Project Contact & Inquiry</h3>
+                <p className="text-xs text-slate-400">Customer Segmentation System &bull; Major Academic Project</p>
+              </div>
+            </div>
+
+            {contactForm.submitted ? (
+              <div className="p-6 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-center my-6">
+                <CheckCircle2 className="w-10 h-10 mx-auto text-emerald-500 mb-2" />
+                <h4 className="font-bold text-base text-emerald-400">Message Delivered Successfully!</h4>
+                <p className="text-xs text-slate-300 mt-1">Thank you for your interest in this customer segmentation research project.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit} className="space-y-4 my-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Your Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={contactForm.name}
+                    onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                    placeholder="Enter your name..."
+                    className={`w-full text-xs px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-brand-500 ${
+                      isDark ? 'bg-slate-800/80 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={contactForm.email}
+                    onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                    placeholder="name@example.com"
+                    className={`w-full text-xs px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-brand-500 ${
+                      isDark ? 'bg-slate-800/80 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">Inquiry or Project Message</label>
+                  <textarea
+                    required
+                    rows="3"
+                    value={contactForm.message}
+                    onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                    placeholder="Discuss findings, machine learning methodology, or research questions..."
+                    className={`w-full text-xs px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-brand-500 ${
+                      isDark ? 'bg-slate-800/80 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-between gap-3">
+                  <a
+                    href="https://github.com/simran7714/customer-segmentation"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-brand-400 hover:underline flex items-center space-x-1"
+                  >
+                    <Github className="w-3.5 h-3.5" />
+                    <span>View on GitHub</span>
+                  </a>
+
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs transition shadow-lg shadow-brand-500/30 flex items-center space-x-1.5"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Send Message</span>
+                  </button>
+                </div>
+              </form>
+            )}
+
+            <div className="pt-4 border-t border-slate-700/50 text-[11px] text-slate-400 text-center">
+              CSE Department &bull; Machine Learning Customer Analytics Capstone
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );
